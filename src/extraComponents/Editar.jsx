@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import api from '../services/api';
 
-export default function Editar({ onClose , id}) {
+export default function Editar({ onClose, id }) {
 
   const [user, setUser] = useState({
     "nombre": "Miguel Pérez",
@@ -17,7 +17,6 @@ export default function Editar({ onClose , id}) {
   });
 
   const fileInputRef = useRef(null);
-  const [formData, setFormData] = useState();
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -25,19 +24,27 @@ export default function Editar({ onClose , id}) {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    
+    const base64 = await convertFileToBase64(file);
+
     if (file) {
-        const base64 = await convertFileToBase64(file);
         setUser((prevFormData) => ({
-          ...prevFormData,
-          foto64: base64,
+            ...prevFormData,
+            foto64: base64,
         }));
-      }
-  };
+        // Se usa la función de devolución de llamada opcional para acceder al estado actualizado
+        setUser((prevFormData) => {
+            console.log(prevFormData);
+            return prevFormData;
+        });
+    }
+};
 
   const handleFormSubmit = async () => {
     try {
+      console.log(user);
+      console.log('A ver que onda');
       const data = await api.updateUserById(id, user);
+      console.log(data);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -47,29 +54,30 @@ export default function Editar({ onClose , id}) {
   const handleInputChange = (e, field, extrafield) => {
     const value = e.target.value;
 
-    if(['nombre', 'edad', 'ciudad', 'intereses'].includes(field)){
-        if(field == 'intereses'){
-            setUser((prevFormData) => ({
-                ...prevFormData,
-                [field]: value.split(", "),
-            }))
-
-        }
-        else {
-            setUser((prevFormData) => ({
-            ...prevFormData,
-            [field]: value,
-          }));
-        }
-    } else {
+    if (['nombre', 'edad', 'ciudad', 'intereses'].includes(field)) {
+      if (field == 'intereses') {
         setUser((prevFormData) => ({
-            ...prevFormData,
-            trabajo:{
-                ...prevFormData.trabajo,
-                [extrafield]: value,
-            }
+          ...prevFormData,
+          [field]: value.split(", "),
+        }))
+
+      }
+      else {
+        setUser((prevFormData) => ({
+          ...prevFormData,
+          [field]: value,
         }));
+      }
+    } else {
+      setUser((prevFormData) => ({
+        ...prevFormData,
+        trabajo: {
+          ...prevFormData.trabajo,
+          [extrafield]: value,
+        }
+      }));
     }
+    console.log(user)
   };
 
   const convertFileToBase64 = (file) => {
@@ -121,29 +129,33 @@ export default function Editar({ onClose , id}) {
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
-              <button onClick={handleButtonClick} className={'h-full w-full items-center flex align-center text-center'} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>Agrega una foto tuya, en formato cuadrado</button>
+              {user.foto64 ?
+                <img src={user.foto64} onClick={handleButtonClick} className={'h-full aspect-square flex object-cover'} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }} />
+                :
+                <button onClick={handleButtonClick} className={'h-full w-full items-center flex align-center text-center'} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>Agrega una foto tuya, en formato cuadrado</button>
+              }
             </div>
             <div className={`flex w-full flex-col ml-16 mr-16`}>
               <div className={`flex w-full mb-8 text-4xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleNameChange} value={user.nombre}/>
+                <input className={`w-full h-full`} onChange={handleNameChange} value={user.nombre} />
               </div>
               <div className={`flex w-full mb-8 text-4xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleEdadChange} value={user.edad}/>
+                <input className={`w-full h-full`} onChange={handleEdadChange} value={user.edad} />
               </div>
               <div className={`flex w-full mb-8 text-4xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleCiudadChange} value={user.ciudad}/>
+                <input className={`w-full h-full`} onChange={handleCiudadChange} value={user.ciudad} />
               </div>
               <div className={`flex w-full mb-4 text-xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleInteresesChange} value={user.intereses.join(', ')}/>
+                <input className={`w-full h-full`} onChange={handleInteresesChange} value={user.intereses.join(', ')} />
               </div>
               <div className={`flex w-full mb-4 text-3xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleTrabajoChange} value={user.trabajo.puesto}/>
+                <input className={`w-full h-full`} onChange={handleTrabajoChange} value={user.trabajo.puesto} />
               </div>
               <div className={`flex w-full mb-4 text-3xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleEmpresaChange} value={user.trabajo.empresa}/>
+                <input className={`w-full h-full`} onChange={handleEmpresaChange} value={user.trabajo.empresa} />
               </div>
               <div className={`flex w-full mb-4 text-2xl text-gray-400`}>
-                <input className={`w-full h-full`} onChange={handleExperienciaChange} value={user.trabajo.experencia}/>
+                <input className={`w-full h-full`} onChange={handleExperienciaChange} value={user.trabajo.experiencia} />
               </div>
               <div className={`flex w-full mb-4 place-items-end`}>
                 <button onClick={handleFormSubmit} className="flex bg-blue-500 text-white mr-3 px-4 py-2 rounded-md">Subir</button>

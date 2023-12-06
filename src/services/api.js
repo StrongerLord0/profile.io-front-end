@@ -1,5 +1,5 @@
 // Definición de la URL base para las solicitudes a la API
-const BASE_URL = 'https://back-end-api-memz.koyeb.app/users';
+const BASE_URL = 'http://localhost:3000/users';
 
 // Objeto que contiene funciones para interactuar con la API
 const api = {

@@ -100,7 +100,7 @@ export default function Subir({ onClose }) {
       <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
         <div className={`w-3/4 h-3/4 rounded-xl flex items-center justify-center mt-36 p-4 fixed w-full top-0`}>
           <div className={`flex bg-gray-100 h-full rounded-xl m-1.5 text-black border items-center overflow-hidden justify-center`}>
-            <div className={`h-full w-auto aspect-square flex items-center align-center`} style={{backgroundImage: `url(${formData.foto64})`, backgroundSize:'cover',backgroundPosition:'center'}} >
+            <div className={`h-full w-auto aspect-square flex items-center align-center`} >
               <input
                 type="file"
                 ref={fileInputRef}
@@ -108,7 +108,7 @@ export default function Subir({ onClose }) {
                 onChange={handleFileChange}
               />
               {formData.foto64 ?
-              <img onClick={handleButtonClick} className={'h-full w-full items-center flex align-center text-center'} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}/>
+              <img src={formData.foto64} onClick={handleButtonClick} className={'h-full aspect-square flex object-cover'} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}/>
               :
               <button onClick={handleButtonClick} className={'h-full w-full items-center flex align-center text-center'} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>Agrega una foto tuya, en formato cuadrado</button>
               }
