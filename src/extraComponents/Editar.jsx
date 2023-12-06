@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import api from '../services/api';
 
 export default function Editar({ onClose, id }) {
